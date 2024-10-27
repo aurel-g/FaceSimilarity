@@ -1,3 +1,8 @@
+# FaceAnalyze
+Adding new node for face analyzing, the node returen gender and age of the charactor face.
+![c57513b00aa3db4dd464e7280a0157b](https://github.com/user-attachments/assets/6cfc02ce-5a07-4dd0-bffb-64f3b2214136)
+
+
 # FaceSimilarity
 A ComfyUI custom node for face comparison.
 This node utilizes Face++'s facial recognition and comparison algorithms by directly calling the Face++ API. Its usage in the workflow is as follows:
@@ -12,6 +17,7 @@ Adding your Face++ API Key and Secret to the
 
 
 ## 中文说明
+2024-10-27 新增脸部分析节点，返回脸部年龄和性别。
 这个节点使用了Face++的脸部识别和比较算法，直接调用Face++的API，在流程中用法如下
 ## 安装
 只需要把文件放到 custom_node目录下即可。
