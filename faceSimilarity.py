@@ -1,7 +1,5 @@
 import cv2
 import numpy as np
-from PIL import Image
-import numpy as np
 import torch
 from PIL import ImageOps
 from PIL import Image
@@ -87,8 +85,8 @@ class SimilarityPM:
         }
         
         data = {
-            'api_key': '',
-            'api_secret':  ''
+            'api_key': '0X5sv_4sHURazhR5qjWmlykNMW1LWLWj',
+            'api_secret':  '21TxSI1HAvxn94SqEnhxEgC3mpBbikww'
         }
 
         try:
@@ -105,11 +103,71 @@ class SimilarityPM:
             print('Error:', e)
             return ("0",)
 
+class FaceAnylysePM:
+    @classmethod
+    def INPUT_TYPES(s):
+        return \
+            {
+                "required": {
+                    "face_image": ("IMAGE",),                                        
+                },
+            }    
+
+    RETURN_TYPES = ("STRING","STRING",)
+    RETURN_NAMES = ("gender","age",)
+
+    FUNCTION = "face_analyze_faceplusplus"
+    CATEGORY = "facecompare"  
+    
+    
+    def face_analyze_faceplusplus(self, face_image):
+        import requests
+        url = "https://api-cn.faceplusplus.com/facepp/v3/detect"
+        print("Node initia")
+        img_byte_arr = BytesIO()        
+        tensor_to_img(face_image).save(img_byte_arr, format='PNG')
+        image_data1 = img_byte_arr.getvalue()
         
+        files = {
+            'image_file': image_data1           
+        }
+        params = {
+            'api_key': '0X5sv_4sHURazhR5qjWmlykNMW1LWLWj',
+            'api_secret': '21TxSI1HAvxn94SqEnhxEgC3mpBbikww',
+            'return_landmark': 0,  # 返回83个人脸关键点（可选）
+            'return_attributes': 'gender,age'  # 可以在检测时返回一些基础属性（可选）
+        }
+        try:
+            response = requests.post(url, files=files, data=params)     
+            if response.status_code == 200:
+                print("calling success")
+                data = response.json()
+                if 'faces' in data and len(data['faces']) > 0:
+                    face_token = data['faces'][0]['face_token']
+                    face_gender= data['faces'][0]['attributes']['gender']['value']
+                    face_age = data['faces'][0]['attributes']['age']['value']
+                    print(f"Face Token: {face_token}")
+                    print(f"face_gender: {face_gender}")
+                    print(f"face_age: {face_age}")
+                    return (face_gender,face_age,)
+                else:
+                    print("No faces detected.")
+            else:
+                print(f"Error: {response.status_code}, Message: {response.json().get('error_message')}")           
+            return (face_gender,face_age,)
+        
+        except Exception as e:
+            print('Error:', e)
+            return ("N/A","N/A")
+        
+        
+          
     
 NODE_CLASS_MAPPINGS = {
-    "Face-similarity": SimilarityPM,    
+    "Face-similarity": SimilarityPM,  
+    "Face-analyze": FaceAnylysePM,  
 }
 NODE_DISPLAY_NAME_MAPPINGS = {   
     "Face-similarity": "Face-similarity",
+    "Face-analyze": "Face-analyze",
 }
